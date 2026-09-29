@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.vscode
+.idea
+miniprogram_npm
+*.log
+Dockerfile
+.dockerignore
+README.md
