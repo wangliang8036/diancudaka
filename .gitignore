@@ -5,3 +5,5 @@ npm-debug.log*
 .vscode/
 .idea/
 miniprogram_npm/
+.env
+.env.local
