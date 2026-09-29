@@ -51,6 +51,37 @@ GET /api/checkin/list
 
 本地开发环境（默认）下未注入 `X-WX-OPENID` 时，会回退到 body / query 的 `openid`，便于 curl / Postman 调试。
 
+## 数据库
+
+通过环境变量切换存储后端：
+
+- **配了 `MYSQL_HOST`**：使用 MySQL，重启不丢数据，适合生产
+- **没配 `MYSQL_HOST`**：使用内存数组，重启即清空，仅供本地调试
+
+启用 MySQL 时需要的环境变量（见 `.env.example`）：
+
+| 变量 | 必填 | 说明 |
+| --- | --- | --- |
+| `MYSQL_HOST` | 是 | 数据库地址 |
+| `MYSQL_PORT` | 否 | 默认 `3306` |
+| `MYSQL_USER` | 是 | 数据库用户名 |
+| `MYSQL_PASSWORD` | 是 | 数据库密码 |
+| `MYSQL_DATABASE` | 否 | 默认 `checkin`，需提前创建好库 |
+
+服务启动时会自动执行 `CREATE TABLE IF NOT EXISTS checkin_records (...)`，云托管场景下重启幂等。
+
+表结构：
+
+```sql
+CREATE TABLE checkin_records (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  openid VARCHAR(64) NOT NULL,
+  note VARCHAR(500) NOT NULL DEFAULT '',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_openid_created (openid, created_at)
+);
+```
+
 ## 本地运行
 
 ```bash
